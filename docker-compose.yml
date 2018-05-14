@@ -1,5 +1,5 @@
 # Observium and MariaDB container
-# Maintained by letenkov@madarin.solutions
+# Maintained by Eugene Letenkov <letenkov@mandarin.solutions>
 
 version: '3.3'
 
