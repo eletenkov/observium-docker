@@ -21,7 +21,7 @@
 #        -e OBSERVIUM_DB_USER=observium \
 #        -e OBSERVIUM_DB_PASS=passw0rd \
 #        -e OBSERVIUM_DB_NAME=observium \
-#        -p 80:80 somsakc/observium
+#        -p 80:80 mandarinsolutions/observium
 #
 # References:
 #  - Follow platform guideline specified in https://github.com/docker-library/official-images
