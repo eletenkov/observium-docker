@@ -1,0 +1,24 @@
+// Custom configuratin 
+
+// Mailer backend Settings
+$config['email']['backend'] = 'mail'; // Mail backend. Allowed: "mail" (PHP's built-in), "sendmail", "smtp".
+$config['email']['smtp_host'] = 'smtp.gmail.com'; // Outgoing SMTP server name.
+$config['email']['smtp_port'] = 465; // The port to connect.
+$config['email']['smtp_timeout'] = 10; // SMTP connection timeout in seconds.
+$config['email']['smtp_secure'] = 'ssl'; // Enable encryption. Use 'tls' or 'ssl'
+$config['email']['smtp_auth'] = FALSE; // Whether or not to use SMTP authentication.
+$config['email']['smtp_username'] = 'alerts@mandarin.solutions'; // SMTP username.
+$config['email']['smtp_password'] = 'Myunclehasmosthonespriciples'; // Password for SMTP authentication.
+
+// Observium Geocoding settings
+$config['geocoding']['enable']         = TRUE;              // Enable geocoding
+$config['geocoding']['api']            = 'yandex';           // Geocoding API
+$config['geocoding']['default']['lat'] =  "55.726360";     // Default latitude for devices
+$config['geocoding']['default']['lon'] =  "37.399144";    // Default longitude for devices
+$config['location_menu_geocoded']      = FALSE;             // Build locaion menu from location data
+$config['frontpage']['map']['region']        = "RU";         // Map region
+$config['frontpage']['map']['realworld']     = false;
+$config['frontpage']['map']['resolution']    = "provinces";
+$config['frontpage']['map']['center']['lat'] =  "55.726360";   // Initial latitude for map
+$config['frontpage']['map']['center']['lng'] =  "37.399144";  // Initial longitude for map
+$config['frontpage']['map']['zoom']          = '10';            // Initial zoom level for map
