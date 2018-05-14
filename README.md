@@ -36,7 +36,7 @@ Either follow the choice 1. or 2. below to run Observium.
     -e OBSERVIUM_DB_NAME=observium \
     -e TZ=Asia/Bangkok
     -p 80:80
-    mbixtech/observium
+    mandarinsolutions/observium
 ```
 
 > Note: You must replace passwords specified in environment parameters of both containers with your secure passwords instead.
