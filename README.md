@@ -4,7 +4,7 @@ Observium is network monitoring with intuition. It is a low-maintenance auto-dis
 ## Usage
 Either follow the choice 1. or 2. below to run Observium.
 
-### A. Manual Run Containers
+### 1. Manual Run Containers
 - Prepare working directory for docker containers, for example below.
 ```
   $ mkdir /srv/docker/observium
