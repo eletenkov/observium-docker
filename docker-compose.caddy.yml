@@ -5,9 +5,8 @@ version: '3.3'
 
 services:
 
-    db:
+  observiumdb:
        image: mariadb:latest
-       container_name: observium_db
        environment:
          - MYSQL_ROOT_PASSWORD=passw0rd
          - MYSQL_USER=observium
@@ -16,13 +15,13 @@ services:
          - TZ=Europe/Moscow
        volumes:
          - /srv/docker/observium/data:/var/lib/mysql
+#         - /srv/docker/observium/mysql:/docker-entrypoint-initdb.d
        networks:
-         - backend
+         - back-tier
        restart: always
 
-    app:
+  observiumap:
        image: mandarinsolutions/observium
-       container_name: observium_app
        environment:
          - OBSERVIUM_ADMIN_USER=admin
          - OBSERVIUM_ADMIN_PASS=passw0rd
@@ -36,11 +35,11 @@ services:
          - /srv/docker/observium/lock:/opt/observium/lock
          - /srv/docker/observium/rrd:/opt/observium/rrd
        networks:
-         - frontend
-         - backend
+         - front-tier
+         - back-tier
        restart: always
        depends_on:
-         - db
+         - observiumdb
        extra_hosts:
          - observium:92.53.69.56
          - vpn1:95.213.138.82
@@ -57,11 +56,28 @@ services:
          - lb1:92.53.69.240
          - lb2:92.53.69.240
 
+  observiumgw:
+       image: mandarinsolutions/caddy:${CADDY_VERSION:-0.10.9}
+       ports:
+         - 80:80
+         - 443:443
+         - 9180:9180
+       volumes:
+         - certs:/.caddy
+       networks:
+         - front-tier
+       healthcheck:
+         test: ["CMD", "curl", "-f", "http://localhost:80"]
+         interval: 5s
+         timeout: 1s
+         retries: 3
+
+volumes:
+  certs: {}
+
 networks:
-    frontend:
-       external:
-          name: frontend
-    backend:
-       external:
-          name: observium_backend
-      
+  front-tier:
+      driver: bridge
+  back-tier:
+      driver: bridge
+
