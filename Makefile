@@ -3,7 +3,7 @@
 all: build
 
 build:
-	@docker build -t mandarinsolutions/observium .
+	@docker build -t mandarin/observium .
 
 run:
 	@docker-compose up -d
