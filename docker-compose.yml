@@ -1,67 +1,120 @@
-# Observium and MariaDB container
-# Maintained by Eugene Letenkov <letenkov@mandarin.solutions>
+# Observium container
+# maintained by Eugene Letenkov <letenkov@mandarin.solutions>
 
-version: '3.3'
+version: "3.3"
 
 services:
+  observiumgw:
+    build:
+      context: caddy
+      dockerfile: Dockerfile
+      args:
+        - VERSION=${CADDY_VERSION:-latest}
+    image: mandarinsolutions/caddy:${CADDY_VERSION:-latest}
+    container_name: proxy
+    environment:
+      - ACME_AGREE=true
+    ports:
+      - 80:80
+      - 443:443
+      - 9180:9180
+    volumes:
+      - certs:/.caddy
+    networks:
+      - front-tier
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-    db:
-       image: mariadb:latest
-       container_name: observium_db
-       environment:
-         - MYSQL_ROOT_PASSWORD=passw0rd
-         - MYSQL_USER=observium
-         - MYSQL_PASSWORD=passw0rd
-         - MYSQL_DATABASE=observium
-         - TZ=Europe/Moscow
-       volumes:
-         - /srv/docker/observium/data:/var/lib/mysql
-       networks:
-         - backend
-       restart: always
+  observiumdb:
+    image: mariadb:latest
+    container_name: database
+    environment:
+      - MYSQL_ROOT_PASSWORD=passw0rd
+      - MYSQL_USER=observium
+      - MYSQL_PASSWORD=passw0rd
+      - MYSQL_DATABASE=observium
+      - TZ=Europe/Moscow
+    volumes:
+      - /srv/docker/observium/data:/var/lib/mysql
+    networks:
+      - back-tier
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-    app:
-       image: mandarinsolutions/observium
-       container_name: observium_app
-       environment:
-         - OBSERVIUM_ADMIN_USER=admin
-         - OBSERVIUM_ADMIN_PASS=passw0rd
-         - OBSERVIUM_DB_HOST=observiumdb
-         - OBSERVIUM_DB_NAME=observium
-         - OBSERVIUM_DB_USER=observium 
-         - OBSERVIUM_DB_PASS=passw0rd
-         - TZ=Europe/Moscow
-       volumes:
-         - /srv/docker/observium/logs:/opt/observium/logs
-         - /srv/docker/observium/lock:/opt/observium/lock
-         - /srv/docker/observium/rrd:/opt/observium/rrd
-       networks:
-         - frontend
-         - backend
-       restart: always
-       depends_on:
-         - db
-       extra_hosts:
-         - observium:92.53.69.56
-         - vpn1:95.213.138.82
-         - vpn2:95.213.138.83
-         - npp1:95.213.138.89
-         - nx1:95.213.138.90
-         - sp1:95.213.138.91
-         - wspcm1:95.213.138.92
-         - wspcm:95.213.138.92
-         - dm1:95.213.138.93
-         - css1:95.213.138.94
-         - cs41134:95.213.138.85
-         - cs41565:95.213.138.86
-         - lb1:92.53.69.240
-         - lb2:92.53.69.240
+  observiumap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VERSION=${OBSERVIUM_VERSION:-latest}
+    image: mandarinsolutions/observium:${OBSERVIUM_VERSION:-latest}
+    container_name: observium
+    environment:
+      - OBSERVIUM_ADMIN_USER=admin
+      - OBSERVIUM_ADMIN_PASS=passw0rd
+      - OBSERVIUM_DB_HOST=observiumdb
+      - OBSERVIUM_DB_NAME=observium
+      - OBSERVIUM_DB_USER=observium
+      - OBSERVIUM_DB_PASS=passw0rd
+      - TZ=Europe/Moscow
+    volumes:
+      - /srv/docker/observium/logs:/opt/observium/logs
+      - /srv/docker/observium/lock:/opt/observium/lock
+      - /srv/docker/observium/rrd:/opt/observium/rrd
+    networks:
+      - front-tier
+      - back-tier
+    restart: always
+    depends_on:
+      - observiumdb
+    extra_hosts:
+      - observium:92.53.69.56
+      - vpn1:95.213.138.82
+      - as1:95.213.138.82
+      - as2:95.213.138.83
+      - npp1:95.213.138.89
+      - nx1:95.213.138.90
+      - spc1:95.213.138.91
+      - cs41224:95.213.138.88
+      - wspc1:95.213.138.92
+      - dm1:95.213.138.93
+      - cs1:95.213.138.94
+      - cs41134:95.213.138.85
+      - cs41565:95.213.138.86
+      - lb1:92.53.69.240
+      - lb2:92.53.69.240
+      - cs47334:31.41.152.106
+      - aos1-spb3:31.41.152.106
+      - vpn2:176.74.14.74
+      - cs41132:95.213.138.87
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  certs: {}
 
 networks:
-    frontend:
-       external:
-          name: frontend
-    backend:
-       external:
-          name: observium_backend
-      
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge

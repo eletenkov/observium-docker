@@ -3,7 +3,7 @@
 all: build
 
 build:
-	@docker build -t mandarin/observium .
+	@docker build -t mandarinsolutions/observium .
 
 run:
 	@docker-compose up -d
@@ -13,3 +13,9 @@ clean:
 
 purge:
 	@docker-compose down -v --rmi all
+
+shell:
+	@docker exec -ti observium bash
+
+logs:
+	@docker-compose logs -f

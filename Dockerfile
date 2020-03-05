@@ -30,7 +30,7 @@
 FROM ubuntu:16.04
 
 LABEL maintainer "letenkov@mandarin.solutions"
-LABEL version="1.1.2"
+LABEL version="1.3.1"
 LABEL description="Docker container for Observium Community Edition"
 
 ARG OBSERVIUM_ADMIN_USER=admin
@@ -52,8 +52,8 @@ ENV OBSERVIUM_DB_NAME=$OBSERVIUM_DB_NAME
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get update
 RUN apt-get install -y libapache2-mod-php7.0 php7.0-cli php7.0-mysql php7.0-mysqli php7.0-gd php7.0-mcrypt php7.0-json \
-      php-pear snmp fping mysql-client python-mysqldb rrdtool subversion whois mtr-tiny ipmitool \
-      graphviz imagemagick apache2 sendmail
+    php-pear snmp fping mysql-client python-mysqldb rrdtool subversion whois mtr-tiny ipmitool \
+    graphviz imagemagick apache2 sendmail
 RUN apt-get install -y libvirt-bin
 RUN apt-get install -y cron supervisor wget locales
 RUN apt-get clean

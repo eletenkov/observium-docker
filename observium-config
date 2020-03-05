@@ -1,5 +1,7 @@
 // Custom configuratin 
 
+$config['db']['debug']      = TRUE;        // If TRUE store errors in DB queries into logs/db.log
+
 // Mailer backend Settings
 $config['email']['backend'] = 'mail'; // Mail backend. Allowed: "mail" (PHP's built-in), "sendmail", "smtp".
 $config['email']['smtp_host'] = 'smtp.gmail.com'; // Outgoing SMTP server name.

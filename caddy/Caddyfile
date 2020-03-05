@@ -1,0 +1,15 @@
+observium.mandarin.solutions {
+  proxy / observiumap:80 {
+    header_upstream Host {host}
+    header_upstream X-Real-IP {remote}
+    header_upstream X-Forwarded-Proto {scheme}
+  }
+
+  header / {
+    #Include any headers for your site here
+  }
+
+  gzip
+  log
+  tls letenkov@mandarin.solutions #Your email for Let's Encrypt Verification
+}
